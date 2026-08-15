@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Our Memories, My Labidabs 💕</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Georgia', 'Segoe UI', serif;
+    background: linear-gradient(160deg, #2a0f16 0%, #4a1424 40%, #6e1b30 100%);
+    color: #ffe4ec;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Soft floating hearts */
+  .heart {
+    position: fixed;
+    top: -10%;
+    font-size: 20px;
+    color: rgba(255, 182, 202, 0.55);
+    animation: floatUp linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(-115vh) translateX(20px) rotate(360deg); opacity: 0; }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px 90px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  header h1 {
+    font-size: clamp(26px, 5vw, 42px);
+    margin: 0 0 10px;
+    color: #ffd7e4;
+    text-shadow: 0 0 20px rgba(255, 105, 145, 0.5);
+  }
+
+  header p {
+    color: #ffc0d3;
+    font-style: italic;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .gallery {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+
+  @media (max-width: 900px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ▶ Play Video button, floating dead-center over the photo grid */
+  .video-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #ff6ec7, #ff1493);
+    box-shadow: 0 10px 30px rgba(255, 20, 147, 0.55), 0 0 0 6px rgba(255,255,255,0.15);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .video-btn:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 14px 36px rgba(255, 20, 147, 0.7), 0 0 0 8px rgba(255,255,255,0.22);
+  }
+
+  .video-btn .play-icon {
+    font-size: 18px;
+  }
+
+  /* Video popup */
+  #videoModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  #videoModal.show {
+    display: flex;
+  }
+
+  .video-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 780px;
+    animation: videoPopIn 0.35s ease;
+  }
+
+  .video-modal-content video {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    display: block;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    background: #000;
+  }
+
+  #closeVideoModal {
+    position: absolute;
+    top: -42px;
+    right: 0;
+    font-size: 30px;
+    line-height: 1;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  @keyframes videoPopIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  figure {
+    margin: 0;
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    background: #3a1420;
+    aspect-ratio: 4 / 5;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  figure:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(255, 105, 145, 0.35);
+  }
+
+  figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  figure:hover img {
+    transform: scale(1.08);
+  }
+
+  figcaption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 14px 16px 12px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    color: #ffe4ec;
+  }
+
+  /* ✏️ Edit the captions below in each figcaption to match your own memory */
+
+  .cta {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    font-size: 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    color: #ffe4ec;
+    text-decoration: none;
+    box-shadow: 0 0 20px rgba(255, 105, 145, 0.35);
+    transition: all 0.3s ease;
+  }
+
+  .back-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 30px rgba(255, 105, 145, 0.6);
+  }
+
+  .closing {
+    text-align: center;
+    margin-top: 26px;
+    color: #ffc0d3;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ===============================
+     RESPONSIVE: phone / tablet / desktop
+  ================================= */
+
+  /* Once the grid drops below 4 columns (tablet/phone), a button absolutely
+     centered over the whole stack looks lost. Turn it into its own row
+     above the photos instead. */
+  @media (max-width: 900px) {
+    .video-btn {
+      position: static;
+      grid-column: 1 / -1;
+      transform: none;
+      justify-self: center;
+      margin: 0 0 4px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .wrap {
+      padding: 40px 16px 70px;
+    }
+    header {
+      margin-bottom: 34px;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .wrap {
+      max-width: 1300px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Happy Anniversary, My Labidabs 💕</h1>
+    <p>Every picture, a little proof that we made it through the distance ✨</p>
+  </header>
+
+  <div class="gallery">
+    <!-- ✏️ Video file: C:\xampp\htdocs\labidabs\my-loves.mp4 -->
+    <button id="playVideoBtn" class="video-btn">
+      <span class="play-icon">▶️</span>
+      <span>Play Video</span>
+    </button>
+
+    <figure>
+      <img src="memory-01.jpg" alt="Crater lake hike">
+      <figcaption>Chasing views together 🏔️</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-02.jpg" alt="Waterfall selfie">
+      <figcaption>Waterfall adventure 💦</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-03.jpg" alt="Beach sunset">
+      <figcaption>Golden hour by the beach 🌊</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-04.jpg" alt="Parking lot mirror selfie">
+      <figcaption>Random mirror selfie, iconic 😄</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-05.jpg" alt="Silly close-up selfie">
+      <figcaption>Us being us 🤪</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-06.jpg" alt="Studio photoshoot">
+      <figcaption>That one photoshoot day 📸</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-07.jpg" alt="Roller skating date">
+      <figcaption>Roller skating date night 🛼</figcaption>
+    </figure>
+    <figure>
+      <img src="memory-08.jpg" alt="Funny car selfies">
+      <figcaption>Car ride shenanigans 🚗</figcaption>
+    </figure>
+  </div>
+
+  <div class="closing">
+    <p>From roller rinks to random parking garages, sunsets to sinigang —<br>
+    thank you for making every ordinary day feel like an adventure, my loves.</p>
+  </div>
+
+  <div class="cta">
+    <a class="back-btn" href="index1.html">
+      <span>⬅</span>
+      <span>Back to the flowers</span>
+    </a>
+  </div>
+</div>
+
+<div id="videoModal">
+  <div class="video-modal-content">
+    <span id="closeVideoModal">&times;</span>
+    <video id="ourVideo" controls playsinline>
+      <source src="my-loves.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
+<script>
+  const floatEmojis = ['💗','🌸','💐','🌷','✨','💕'];
+  function spawnHeart() {
+    const el = document.createElement('div');
+    el.className = 'heart';
+    el.textContent = floatEmojis[Math.floor(Math.random() * floatEmojis.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (16 + Math.random() * 16) + 'px';
+    const duration = 9 + Math.random() * 8;
+    el.style.animationDuration = duration + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), duration * 1000);
+  }
+  setInterval(spawnHeart, 700);
+  for (let i = 0; i < 8; i++) setTimeout(spawnHeart, i * 250);
+
+  // Video popup
+  const playVideoBtn = document.getElementById('playVideoBtn');
+  const videoModal = document.getElementById('videoModal');
+  const closeVideoModal = document.getElementById('closeVideoModal');
+  const ourVideo = document.getElementById('ourVideo');
+
+  // Tell any other open tab from this site (e.g. the flower page, which
+  // may still be playing its background music) to stop its audio.
+  const audioChannel = ("BroadcastChannel" in window) ? new BroadcastChannel("labidabs-audio") : null;
+
+  playVideoBtn.addEventListener('click', () => {
+    if (audioChannel) audioChannel.postMessage("stop");
+
+    videoModal.classList.add('show');
+    ourVideo.currentTime = 0;
+    ourVideo.play().catch(() => {
+      // Autoplay might be blocked; the visible controls let them press play manually.
+    });
+  });
+
+  function closeVideo() {
+    videoModal.classList.remove('show');
+    ourVideo.pause();
+  }
+
+  closeVideoModal.addEventListener('click', closeVideo);
+  videoModal.addEventListener('click', (e) => {
+    if (e.target === videoModal) closeVideo();
+  });
+</script>
+
+</body>
+</html>
